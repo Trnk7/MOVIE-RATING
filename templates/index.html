@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Rating Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>Movie Rating Predictor</h1>
+        <p>Predict whether a movie is likely to be a Hit (IMDb score ≥ 7)</p>
+      </header>
+
+      {% if model_error %}
+      <div class="alert error">
+        {{ model_error }}
+      </div>
+      {% endif %}
+
+      <form method="POST" class="form-card">
+        <div class="grid">
+          <label>
+            Budget ($)
+            <input type="number" name="budget" min="0" step="100000" value="{{ form_data.get('budget', '') }}" required />
+          </label>
+
+          <label>
+            Runtime (minutes)
+            <input type="number" name="duration" min="30" step="1" value="{{ form_data.get('duration', '') }}" required />
+          </label>
+
+          <label>
+            Genre
+            <select name="genre" required>
+              <option value="">Select a genre</option>
+              {% for genre in genres %}
+              <option value="{{ genre }}" {% if form_data.get('genre') == genre %}selected{% endif %}>{{ genre }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            Number of Votes
+            <input type="number" name="num_voted_users" min="0" step="1" value="{{ form_data.get('num_voted_users', '') }}" required />
+          </label>
+
+          <label>
+            Release Year
+            <input type="number" name="title_year" min="1900" max="2030" step="1" value="{{ form_data.get('title_year', '') }}" required />
+          </label>
+        </div>
+
+        <button type="submit">Predict</button>
+      </form>
+
+      {% if result %}
+      <div class="result-card {% if result.get('error') %}error{% else %}success{% endif %}">
+        {% if result.get('error') %}
+          <h2>Input Error</h2>
+          <p>{{ result['error'] }}</p>
+        {% else %}
+          <h2>Prediction: {{ result['prediction'] }}</h2>
+          <p>Confidence: {{ result['confidence'] }}%</p>
+          <div class="probability-bar">
+            <span style="width: {{ result['probability_hit'] }}%"></span>
+          </div>
+          <ul>
+            <li>Hit: {{ result['probability_hit'] }}%</li>
+            <li>Not a Hit: {{ result['probability_not_hit'] }}%</li>
+          </ul>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
