@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Rating Prediction</title>
+    <link
+      href="{{ url_for('static', filename='style.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <span class="logo">🎬</span>Movie AI<small
+            >Machine Learning Movie Predictor</small
+          >
+        </div>
+        <div class="pill">ML Prediction • v1.0</div>
+      </header>
+      <main>
+        <section class="hero">
+          <div class="film">🎥</div>
+          <h1>Movie Rating Prediction</h1>
+          <p>
+            Predict how highly a movie could be rated using five simple movie
+            features.
+          </p>
+          <button
+            class="start"
+            onclick="
+              document
+                .getElementById('prediction')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            Start Prediction →
+          </button>
+        </section>
+        <section id="prediction" class="section">
+          <div class="section-title">
+            <h2>Enter Movie Features</h2>
+            <p>Fill in the five features used by the prediction model.</p>
+          </div>
+
+          <div class="card form">
+            <div class="features">
+              <div class="feature">
+                <label>Movie Title</label>
+                <input id="title" value="Inception" placeholder="Movie name" />
+              </div>
+
+              <div class="feature">
+                <label>Genre</label>
+                <select id="genre">
+                  <option value="">Select Genre</option>
+
+                  {% for genre in genres %}
+                  <option value="{{ genre }}">{{ genre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="feature">
+                <label>Release Year</label>
+                <input
+                  id="year"
+                  type="number"
+                  value="2010"
+                  placeholder="2010"
+                />
+              </div>
+
+              <div class="feature">
+                <label>Runtime (min)</label>
+                <input
+                  id="runtime"
+                  type="number"
+                  value="148"
+                  placeholder="148"
+                />
+              </div>
+
+              <div class="feature">
+                <label>Budget</label>
+                <input
+                  id="budget"
+                  type="number"
+                  value="160000000"
+                  placeholder="Movie budget"
+                />
+              </div>
+
+              <div class="feature">
+                <label>Number of Voted Users</label>
+                <input
+                  id="votes"
+                  type="number"
+                  value="200000"
+                  placeholder="Number of votes"
+                />
+              </div>
+            </div>
+
+            <button class="predict" onclick="predict()">
+              ⭐ Predict Movie Rating
+            </button>
+          </div>
+        </section>
+        <section id="resultSection" class="section hidden">
+          <div id="result" class="card result">
+            <div class="result-inner">
+              <div class="rating" id="rating">-</div>
+              <div class="result-info">
+                <h3 id="resultTitle">Movie Prediction</h3>
+                <p id="resultText">Enter the movie details and click predict.</p>
+                <div class="bar">
+                  <div class="fill" id="fill"></div>
+                </div>
+                <span class="badge" id="badge"> Waiting for prediction </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer>
+        Movie Rating Prediction • Frontend prototype ready to connect with your
+        Flask machine-learning model.
+      </footer>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </body>
+</html>
