@@ -54,22 +54,43 @@ async function predict() {
 function showResult(result, title) {
 
     console.log(result);
-    document.getElementById("resultTitle").textContent = title;
+    const resultSection = document.getElementById("resultSection");
+    const fill = document.getElementById("fill");
+    const ratingEl = document.getElementById("rating");
+    const resultTitleEl = document.getElementById("resultTitle");
+    const resultTextEl = document.getElementById("resultText");
+    const badgeEl = document.getElementById("badge");
+
+    resultTitleEl.textContent = title;
 
     const prediction = Number(result.prediction);
     const confidence = Number(result.confidence || 0);
+    const ratingPercent = Math.min(Math.max((prediction / 10) * 100, 0), 100);
 
-    document.getElementById("badge").textContent =
-        `Estimated IMDb rating`;
+    badgeEl.textContent = confidence > 0
+        ? `Estimated IMDb rating • ${confidence.toFixed(0)}% confidence`
+        : `Estimated IMDb rating`;
 
-    document.getElementById("fill").style.width =
-        `${Math.min(Math.max((prediction / 10) * 100, 0), 100)}%`;
+    fill.style.transition = "none";
+    fill.style.width = "0%";
+    void fill.offsetWidth;
+    fill.style.transition = "width .7s cubic-bezier(.22, 1, .36, 1)";
+    requestAnimationFrame(() => {
+        fill.style.width = `${ratingPercent}%`;
+    });
 
-    document.getElementById("rating").innerHTML =
+    ratingEl.innerHTML =
         `${prediction.toFixed(2)} <span>/ 10</span>`;
 
-    document.getElementById("resultText").textContent =
+    resultTextEl.textContent =
         `This movie is predicted to score about ${prediction.toFixed(2)}/10 on IMDb based on the supplied features.`;
 
-    document.getElementById("resultSection").classList.add("show");
+    resultSection.classList.remove("show");
+    void resultSection.offsetWidth;
+    resultSection.classList.add("show");
+
+    requestAnimationFrame(() => {
+        resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        resultSection.focus({ preventScroll: true });
+    });
 }
